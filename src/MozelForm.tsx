@@ -2,21 +2,18 @@ import React from "react";
 import {ReactViewComponent, ReactViewComponentProps} from "mozel-component/dist/View/ReactView";
 import {ReactView} from "mozel-component";
 import {isPrimitive, isSubClass, primitive} from "validation-kit";
-import View from "mozel-component/dist/View";
 import ComponentSlot from "mozel-component/dist/Component/ComponentSlot";
 import ComponentList from "mozel-component/dist/Component/ComponentList";
-import {immediate} from "mozel";
+import Mozel, {Collection, immediate} from "mozel";
 import log from "./log";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ListGroup from "react-bootstrap/ListGroup";
-import ListGroupItem from "react-bootstrap/ListGroupItem";
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
 import "./mozel-form.css";
-import {humanReadable} from "./utils";
-import MozelSubForm from "./MozelSubForm";
-import MozelCollectionForm from "./MozelCollectionForm";
+import ComponentSlotForm from "./ComponentSlotForm";
+import ComponentListForm from "./ComponentListForm";
+import Field from "./Field";
+import CollectionForm from "./CollectionForm";
 
 type Props = ReactViewComponentProps<MozelForm>;
 type State = Record<string, primitive>;
@@ -33,7 +30,7 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 			if(slot.isReference) return;
 
 			subForms.push(
-				<MozelSubForm slot={slot as unknown as ComponentSlot<ReactView>} key={slot.path}/>
+				<ComponentSlotForm slot={slot as unknown as ComponentSlot<ReactView>} key={slot.path}/>
 			);
 		});
 
@@ -42,7 +39,7 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 			if(list.isReference) return;
 
 			subForms.push(
-				<MozelCollectionForm list={list as unknown as ComponentList<ReactView>} key={list.path}/>
+				<ComponentListForm list={list as unknown as ComponentList<ReactView>} key={list.path}/>
 			)
 		})
 
@@ -50,7 +47,7 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 	}
 
 	onChange(property:string, newValue:primitive) {
-		log.log(`Changing property ${property}.`);
+		log.log(`Changing property '${property}'.`);
 		this.model.$set(property, newValue, true);
 	}
 
@@ -58,29 +55,30 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 		const primitives = this.model.$getPrimitiveProperties();
 		const fields = [];
 		for(let key in primitives) {
-			const value = (this.state[key] || "").toString();
 			if(key === 'gid') continue; // Skip GID
-
-			const label = humanReadable(key);
+			const property = this.model.$property(key as any);
 			fields.push(
-				<ListGroupItem key={key}>
-					<InputGroup>
-						<label>{label}</label>
-						<FormControl
-							aria-label={label}
-							value={value}
-							onChange={event => this.onChange(key, event.currentTarget.value)}
-						/>
-					</InputGroup>
-				</ListGroupItem>
+				<Field key={key} value={property.value as primitive} onChange={newValue => this.onChange(key, newValue)}/>
 			);
 		}
 		return fields;
 	}
 
+	renderPrimitiveCollections() {
+		const collectionFields:JSX.Element[] = [];
+		this.model.$eachProperty(property => {
+			// Non-Mozel Collections
+			if(property.isCollectionType() && !isSubClass((property.value as Collection<any>).getType(), Mozel)) {
+				collectionFields.push(<CollectionForm key={property.name} collection={property.value as Collection<any>}/>);
+			}
+		})
+		return collectionFields;
+	}
+
 	render() {
 		return <ListGroup className="mozel-form">
 			{ this.renderFields() }
+			{ this.renderPrimitiveCollections() }
 			{ this.renderSubForms() }
 		</ListGroup>
 	}
@@ -110,7 +108,8 @@ export default class MozelForm extends ReactView {
 			if(property.isMozelType()) {
 				return this.setupSubComponent(property, MozelForm);
 			}
-			if(property.isCollectionType()) {
+			// Mozel Collection
+			if(property.isCollectionType() && isSubClass((property.value as Collection<any>).getType(), Mozel)) {
 				return this.setupSubComponents(property, MozelForm);
 			}
 		});

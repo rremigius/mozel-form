@@ -12,7 +12,8 @@ export {
 	capitalize,
 	forEach,
 	isFunction,
-	has
+	has,
+	debounce
 } from "lodash";
 
 export function humanReadable(name:string) {

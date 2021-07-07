@@ -10,6 +10,12 @@ class FooModel extends Mozel {
 	@property(String)
 	name?:string;
 
+	@property(Boolean)
+	active?:boolean;
+
+	@collection(String)
+	strings!:Collection<string>;
+
 	@property(BarModel)
 	bar?:BarModel;
 
@@ -22,7 +28,8 @@ const model = FooModel.create<FooModel>({
 	bar: {
 		number: 123
 	},
-	bars: [{number: 1}, {number: 12}]
+	bars: [{number: 1}, {number: 12}],
+	strings: ["foo", "bar"]
 });
 const form = MozelForm.create<MozelForm>(model);
 form.mount(document.getElementById('form')!);
