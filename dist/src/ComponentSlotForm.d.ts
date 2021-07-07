@@ -7,6 +7,10 @@ declare type Props = {
 declare type State = {};
 export default class ComponentSlotForm extends React.Component<Props, State> {
     constructor(props: Props);
+    remove(): void;
+    add(): void;
+    renderForm(component: ReactView): JSX.Element;
+    renderEmpty(): JSX.Element;
     render(): JSX.Element;
 }
 export {};

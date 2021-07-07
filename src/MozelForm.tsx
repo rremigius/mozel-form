@@ -14,6 +14,7 @@ import ComponentSlotForm from "./ComponentSlotForm";
 import ComponentListForm from "./ComponentListForm";
 import Field from "./Field";
 import CollectionForm from "./CollectionForm";
+import {humanReadable} from "./utils";
 
 type Props = ReactViewComponentProps<MozelForm>;
 type State = Record<string, primitive>;
@@ -58,7 +59,12 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 			if(key === 'gid') continue; // Skip GID
 			const property = this.model.$property(key as any);
 			fields.push(
-				<Field key={key} value={property.value as primitive} onChange={newValue => this.onChange(key, newValue)}/>
+				<Field key={key}
+					   type={property.type}
+					   label={humanReadable(property.name)}
+					   value={property.value as primitive}
+					   onChange={newValue => this.onChange(key, newValue)}
+				/>
 			);
 		}
 		return fields;

@@ -52,7 +52,11 @@ export default class CollectionForm extends React.Component<Props, State> {
 		const elements = this.props.collection.map((item, index) => {
 			return <ListGroupItem className="d-flex justify-content-between align-items-start" key={this.getKey(item, index)}>
 				<div className="flex-grow-1">
-					<Field value={this.valueToString(item)} onChange={newValue => this.change(index, newValue)}/>
+					<Field
+						type={this.props.collection.getType()}
+						value={this.valueToString(item)}
+						onChange={newValue => this.change(index, newValue)}
+					/>
 				</div>
 				<Button variant="danger" onClick={event => this.remove(index)}><i className="fas fa-times"/></Button>
 			</ListGroupItem>

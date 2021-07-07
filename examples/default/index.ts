@@ -25,6 +25,7 @@ class FooModel extends Mozel {
 
 const model = FooModel.create<FooModel>({
 	name: 'foo',
+	active: true,
 	bar: {
 		number: 123
 	},
