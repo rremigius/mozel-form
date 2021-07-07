@@ -25,7 +25,7 @@ export default class ComponentSlotForm extends React.Component<Props, State> {
 	}
 
 	renderForm(component:ReactView) {
-		return <div className="ms-2 d-flex justify-content-between align-items-start">
+		return <div className="ms-4 d-flex justify-content-between align-items-start">
 			<div className="flex-grow-1">{component.render()}</div>
 			<Button variant="danger" onClick={event => this.remove()}><i className="fas fa-times"/></Button>
 		</div>

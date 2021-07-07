@@ -21,6 +21,9 @@ class FooModel extends Mozel {
 
 	@collection(BarModel)
 	bars!:Collection<BarModel>;
+
+	@property(FooModel)
+	recursion?:FooModel;
 }
 
 const model = FooModel.create<FooModel>({

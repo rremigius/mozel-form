@@ -64,7 +64,7 @@ export default class CollectionForm extends React.Component<Props, State> {
 
 		return <ListGroupItem>
 			<label>{humanReadable(this.props.collection.relation)}</label>
-			<ListGroup className="ms-2">
+			<ListGroup className="ms-4">
 				{elements}
 				<ListGroupItem className="d-flex justify-content-between align-items-start">
 					<Button variant="primary" onClick={event => this.add()}><i className="fas fa-plus"/></Button>
