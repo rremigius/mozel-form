@@ -10,6 +10,7 @@ import '@fortawesome/fontawesome-free/js/regular'
 import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
+import {ValueChangeEvent} from "mozel-component/dist/PropertySync";
 
 type Props = {
 	list:ComponentList<ReactView>
@@ -17,6 +18,8 @@ type Props = {
 type State = {};
 
 export default class ComponentListForm extends React.Component<Props, State> {
+	debouncedUpdate = debounce(this.forceUpdate.bind(this));
+
 	constructor(props:Props) {
 		super(props);
 		this.state = {};
@@ -60,10 +63,15 @@ export default class ComponentListForm extends React.Component<Props, State> {
 	}
 
 	componentDidMount() {
-		const debouncedUpdate = debounce(this.forceUpdate.bind(this));
+		// TS: update function does not use any callback so will be compatible anyway
+		this.props.list.events.change.on(this.debouncedUpdate as any);
+		this.props.list.events.add.on(this.debouncedUpdate as any);
+		this.props.list.events.remove.on(this.debouncedUpdate as any);
+	}
 
-		this.props.list.events.change.on(event => debouncedUpdate());
-		this.props.list.events.add.on(event => debouncedUpdate());
-		this.props.list.events.remove.on(event => debouncedUpdate());
+	componentWillUnmount() {
+		this.props.list.events.change.off(this.debouncedUpdate as any);
+		this.props.list.events.add.off(this.debouncedUpdate as any);
+		this.props.list.events.remove.off(this.debouncedUpdate as any);
 	}
 }

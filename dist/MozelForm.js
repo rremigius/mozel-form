@@ -65,7 +65,7 @@ class MozelFormReactComponent extends ReactViewComponent {
     }
     componentDidMount() {
         super.componentDidMount();
-        this.model.$watch('*', change => {
+        this.watch('*', change => {
             const property = this.model.$property(change.valuePath);
             if (!property)
                 throw new Error(`Unknown property ${change.valuePath}`);

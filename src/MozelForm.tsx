@@ -16,6 +16,7 @@ import Field from "./Field";
 import CollectionForm from "./CollectionForm";
 import {humanReadable} from "./utils";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
+import PropertyWatcher from "mozel/dist/PropertyWatcher";
 
 type Props = ReactViewComponentProps<MozelForm>;
 type State = Record<string, primitive>;
@@ -96,7 +97,7 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 	componentDidMount() {
 		super.componentDidMount();
 
-		this.model.$watch('*', change => {
+		this.watch('*', change => {
 			const property = this.model.$property(change.valuePath as any);
 			if(!property) throw new Error(`Unknown property ${change.valuePath}`);
 			const value = change.newValue;

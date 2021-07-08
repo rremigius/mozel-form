@@ -1,3 +1,4 @@
+/// <reference types="lodash" />
 import React from "react";
 import ComponentList from "mozel-component/dist/Component/ComponentList";
 import { ReactView } from "mozel-component";
@@ -9,6 +10,7 @@ declare type Props = {
 };
 declare type State = {};
 export default class ComponentListForm extends React.Component<Props, State> {
+    debouncedUpdate: import("lodash").DebouncedFunc<(callback?: (() => void) | undefined) => void>;
     constructor(props: Props);
     get collection(): import("mozel").Collection<import("mozel").default>;
     add(): void;
@@ -16,5 +18,6 @@ export default class ComponentListForm extends React.Component<Props, State> {
     getKey(view: ReactView): import("mozel").alphanumeric;
     render(): JSX.Element;
     componentDidMount(): void;
+    componentWillUnmount(): void;
 }
 export {};

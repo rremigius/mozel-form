@@ -1,9 +1,8 @@
 import React from "react";
 import {uniqueId} from "./utils";
-import InputGroup from "react-bootstrap/InputGroup";
 import {primitive} from "validation-kit";
 import Form from "react-bootstrap/Form";
-import Property, {PropertyType} from "mozel/dist/Property";
+import {PropertyType} from "mozel/dist/Property";
 import Alert from "react-bootstrap/Alert";
 
 type Props = {

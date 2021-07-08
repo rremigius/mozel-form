@@ -8,6 +8,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
 export default class ComponentListForm extends React.Component {
+    debouncedUpdate = debounce(this.forceUpdate.bind(this));
     constructor(props) {
         super(props);
         this.state = {};
@@ -34,10 +35,15 @@ export default class ComponentListForm extends React.Component {
         return _jsxs(ListGroupItem, { children: [_jsx("label", { children: humanReadable(this.props.list.path) }, void 0), _jsxs(ListGroup, Object.assign({ className: "ms-4" }, { children: [elements, _jsx(ListGroupItem, Object.assign({ className: "d-flex justify-content-between align-items-start" }, { children: _jsx(Button, Object.assign({ variant: "primary", onClick: event => this.add() }, { children: _jsx("i", { className: "fas fa-plus" }, void 0) }), void 0) }), void 0)] }), void 0)] }, void 0);
     }
     componentDidMount() {
-        const debouncedUpdate = debounce(this.forceUpdate.bind(this));
-        this.props.list.events.change.on(event => debouncedUpdate());
-        this.props.list.events.add.on(event => debouncedUpdate());
-        this.props.list.events.remove.on(event => debouncedUpdate());
+        // TS: update function does not use any callback so will be compatible anyway
+        this.props.list.events.change.on(this.debouncedUpdate);
+        this.props.list.events.add.on(this.debouncedUpdate);
+        this.props.list.events.remove.on(this.debouncedUpdate);
+    }
+    componentWillUnmount() {
+        this.props.list.events.change.off(this.debouncedUpdate);
+        this.props.list.events.add.off(this.debouncedUpdate);
+        this.props.list.events.remove.off(this.debouncedUpdate);
     }
 }
 //# sourceMappingURL=ComponentListForm.js.map
