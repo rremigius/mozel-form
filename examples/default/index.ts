@@ -1,5 +1,6 @@
 import Mozel, {Collection, collection, property, required} from "mozel";
 import MozelForm from "../../src/MozelForm";
+import Component from "mozel-component";
 
 class BarModel extends Mozel {
 	@property(Number)
@@ -37,7 +38,14 @@ const model = FooModel.create<FooModel>({
 });
 model.$strict = false;
 
-const form = MozelForm.create<MozelForm>(model);
+class MyForm extends MozelForm {
+	static Model = FooModel;
+	static fields = ['name', 'bar'];
+}
+const factory = MozelForm.createFactory();
+factory.register(MyForm);
+
+const form = MyForm.create<MyForm>(model);
 form.mount(document.getElementById('form')!);
 
 console.log(model);

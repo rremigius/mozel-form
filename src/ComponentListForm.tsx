@@ -29,6 +29,8 @@ export default class ComponentListForm extends React.Component<Props, State> {
 		super(props);
 		this.state = {};
 		this.list = this.props.list;
+
+		// TODO: implement componentDidUpdate
 	}
 
 	get collection() {

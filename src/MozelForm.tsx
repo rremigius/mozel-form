@@ -1,11 +1,10 @@
 import React from "react";
 import {ReactViewComponent, ReactViewComponentProps} from "mozel-component/dist/View/ReactView";
-import {ReactView} from "mozel-component";
+import Component, {ReactView} from "mozel-component";
 import {isPrimitive, isSubClass, primitive} from "validation-kit";
 import ComponentSlot from "mozel-component/dist/Component/ComponentSlot";
 import ComponentList from "mozel-component/dist/Component/ComponentList";
 import Mozel, {Collection, immediate} from "mozel";
-import log from "./log";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -16,7 +15,8 @@ import Field from "./Field";
 import CollectionForm from "./CollectionForm";
 import {humanReadable} from "./utils";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
-import PropertyWatcher from "mozel/dist/PropertyWatcher";
+import Property from "mozel/dist/Property";
+import View from "mozel-component/dist/View";
 
 type Props = ReactViewComponentProps<MozelForm>;
 type State = Record<string, primitive>;
@@ -25,72 +25,81 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 		super(props);
 		this.state = {};
 	}
-	renderSubForms() {
-		let subForms:JSX.Element[] = [];
 
-		this.view.eachComponentSlot(slot => {
+	renderProperty(property:Property) {
+		const name = property.name;
+
+		const slot = this.view.getComponentSlot(name);
+		if(slot) {
 			if(!isSubClass(slot.SyncType, ReactView)) return;
 			if(slot.isReference) return;
-
-			subForms.push(
-				<ComponentSlotForm slot={slot as unknown as ComponentSlot<ReactView>} key={slot.path}/>
-			);
-		});
-
-		this.view.eachComponentList(list => {
+			return this.renderComponentSlot(slot as unknown as ComponentSlot<ReactView>);
+		}
+		const list = this.view.getComponentList(name);
+		if(list) {
 			if(!isSubClass(list.SyncType, ReactView)) return;
 			if(list.isReference) return;
 
-			subForms.push(
-				<ComponentListForm list={list as unknown as ComponentList<ReactView>} key={list.path}/>
-			)
-		})
-
-		return subForms;
-	}
-
-	onChange(property:string, newValue:primitive) {
-		log.log(`Changing property '${property}'.`);
-		this.model.$set(property, newValue, true);
-	}
-
-	renderFields() {
-		const primitives = this.model.$getPrimitiveProperties();
-		const fields = [];
-		for(let key in primitives) {
-			if(key === 'gid') continue; // Skip GID
-			const property = this.model.$property(key as any);
-			fields.push(
-				<ListGroupItem key={key}>
-					<Field
-						   type={property.type}
-						   label={humanReadable(property.name)}
-						   value={property.value as primitive}
-						   onChange={newValue => this.onChange(key, newValue)}
-						   error={property.error && property.error.message}
-					/>
-				</ListGroupItem>
-			);
+			return this.renderComponentList(list as unknown as ComponentList<ReactView>);
 		}
-		return fields;
+
+		return this.renderField(property);
 	}
 
-	renderPrimitiveCollections() {
-		const collectionFields:JSX.Element[] = [];
-		this.model.$eachProperty(property => {
-			// Non-Mozel Collections
-			if(property.isCollectionType() && !isSubClass((property.value as Collection<any>).getType(), Mozel)) {
-				collectionFields.push(<CollectionForm key={property.name} collection={property.value as Collection<any>}/>);
-			}
-		})
-		return collectionFields;
+	renderComponentSlot(slot:ComponentSlot<ReactView>) {
+		return <ComponentSlotForm slot={slot}/>
+	}
+
+	renderComponentList(list:ComponentList<ReactView>) {
+		return <ComponentListForm list={list}/>
+	}
+
+	renderField(property:Property) {
+		if(property.isMozelType()) return;
+		if(property.isCollectionType(Mozel)) return;
+
+		if(property.isCollectionType()) {
+			return this.renderPrimitiveCollection(property.value as Collection<primitive>);
+		}
+
+		return <Field
+			type={property.type}
+			label={humanReadable(property.name)}
+			value={property.value as primitive}
+			onChange={newValue => property.set(newValue, true)}
+			error={property.error && property.error.message}
+		/>
+	}
+
+	renderPrimitiveCollection(collection:Collection<primitive>) {
+		return <CollectionForm collection={collection}/>
 	}
 
 	render() {
+		const fields:JSX.Element[] = [];
+		if(this.view.static.fields) {
+			// Only render specified properties
+			this.view.static.fields.forEach(field => {
+				const property = this.model.$property(field as any);
+				if(!property) return;
+
+				const render = this.renderProperty(property);
+				if(render) fields.push(
+					<ListGroupItem key={property.name}>{render}</ListGroupItem>
+				);
+			});
+		} else {
+			// Render all properties
+			this.model.$eachProperty(property => {
+				const render = this.renderProperty(property);
+				fields.push(
+					<ListGroupItem key={property.name}>{render}</ListGroupItem>
+				);
+			});
+		}
+
 		return <ListGroup className="mozel-form">
-			{ this.renderFields() }
-			{ this.renderPrimitiveCollections() }
-			{ this.renderSubForms() }
+			{ fields }
 		</ListGroup>
 	}
 
@@ -109,12 +118,19 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 }
 
 export default class MozelForm extends ReactView {
+	static fields?:string[];
+
+	get static() {
+		return this.constructor as typeof MozelForm;
+	}
+
 	getReactComponent(): typeof React.Component {
 		return MozelFormReactComponent;
 	}
 
 	onInit() {
 		super.onInit();
+
 		this.model.$eachProperty(property => {
 			if(property.isMozelType()) {
 				return this.setupSubComponent(property, MozelForm);
