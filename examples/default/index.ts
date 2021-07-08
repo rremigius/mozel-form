@@ -13,8 +13,8 @@ class FooModel extends Mozel {
 	@property(Boolean)
 	active?:boolean;
 
-	@collection(String)
-	strings!:Collection<string>;
+	@collection(Number)
+	numbers!:Collection<number>;
 
 	@property(BarModel, {required})
 	bar!:BarModel;
@@ -33,8 +33,10 @@ const model = FooModel.create<FooModel>({
 		number: 123
 	},
 	bars: [{number: 1}, {number: 12}],
-	strings: ["foo", "bar"]
+	numbers: [1]
 });
+model.$strict = false;
+
 const form = MozelForm.create<MozelForm>(model);
 form.mount(document.getElementById('form')!);
 

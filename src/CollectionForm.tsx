@@ -50,12 +50,14 @@ export default class CollectionForm extends React.Component<Props, State> {
 
 	render() {
 		const elements = this.props.collection.map((item, index) => {
+			const error = this.props.collection.errors[index];
 			return <ListGroupItem className="d-flex justify-content-between align-items-start" key={this.getKey(item, index)}>
 				<div className="flex-grow-1">
 					<Field
 						type={this.props.collection.getType()}
 						value={this.valueToString(item)}
 						onChange={newValue => this.change(index, newValue)}
+						error={error ? error.message : undefined}
 					/>
 				</div>
 				<Button variant="danger" onClick={event => this.remove(index)}><i className="fas fa-times"/></Button>

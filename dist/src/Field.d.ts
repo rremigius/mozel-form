@@ -6,6 +6,7 @@ declare type Props = {
     onChange?: (newValue: primitive) => void;
     label?: string;
     value?: primitive;
+    error?: string;
 };
 declare type State = {};
 export default class Field extends React.Component<Props, State> {
