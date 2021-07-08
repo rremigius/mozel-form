@@ -17,8 +17,13 @@ type Props = {
 type State = {};
 
 export default class ComponentListForm extends React.Component<Props, State> {
-	debouncedUpdate = debounce(()=>this.forceUpdate());
-	list:ComponentList<ReactView>
+	debouncedUpdate = debounce(()=>{
+		// Because of the debounce, it is possible that the component gets unmounted before next tick.
+		if(this.unmount) this.stopListening();
+		else this.forceUpdate();
+	});
+	list:ComponentList<ReactView>;
+	unmount = false;
 
 	constructor(props:Props) {
 		super(props);
@@ -71,6 +76,11 @@ export default class ComponentListForm extends React.Component<Props, State> {
 	}
 
 	componentWillUnmount() {
+		this.stopListening();
+		this.unmount = true;
+	}
+
+	stopListening() {
 		this.list.events.change.off(this.debouncedUpdate as any);
 		this.list.events.add.off(this.debouncedUpdate as any);
 		this.list.events.remove.off(this.debouncedUpdate as any);

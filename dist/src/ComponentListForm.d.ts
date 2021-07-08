@@ -10,7 +10,8 @@ declare type Props = {
 };
 declare type State = {};
 export default class ComponentListForm extends React.Component<Props, State> {
-    debouncedUpdate: import("lodash").DebouncedFunc<(callback?: (() => void) | undefined) => void>;
+    debouncedUpdate: import("lodash").DebouncedFunc<() => void>;
+    list: ComponentList<ReactView>;
     constructor(props: Props);
     get collection(): import("mozel").Collection<import("mozel").default>;
     add(): void;

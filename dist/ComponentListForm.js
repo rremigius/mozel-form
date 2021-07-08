@@ -8,8 +8,15 @@ import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
 export default class ComponentListForm extends React.Component {
-    debouncedUpdate = debounce(() => this.forceUpdate());
+    debouncedUpdate = debounce(() => {
+        // Because of the debounce, it is possible that the component gets unmounted before next tick.
+        if (this.unmount)
+            this.stopListening();
+        else
+            this.forceUpdate();
+    });
     list;
+    unmount = false;
     constructor(props) {
         super(props);
         this.state = {};
@@ -43,6 +50,10 @@ export default class ComponentListForm extends React.Component {
         this.list.events.remove.on(this.debouncedUpdate);
     }
     componentWillUnmount() {
+        this.stopListening();
+        this.unmount = true;
+    }
+    stopListening() {
         this.list.events.change.off(this.debouncedUpdate);
         this.list.events.add.off(this.debouncedUpdate);
         this.list.events.remove.off(this.debouncedUpdate);
