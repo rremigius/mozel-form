@@ -10,7 +10,6 @@ import '@fortawesome/fontawesome-free/js/regular'
 import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
-import {ValueChangeEvent} from "mozel-component/dist/PropertySync";
 
 type Props = {
 	list:ComponentList<ReactView>
@@ -18,7 +17,7 @@ type Props = {
 type State = {};
 
 export default class ComponentListForm extends React.Component<Props, State> {
-	debouncedUpdate = debounce(this.forceUpdate.bind(this));
+	debouncedUpdate = debounce(()=>this.forceUpdate());
 
 	constructor(props:Props) {
 		super(props);

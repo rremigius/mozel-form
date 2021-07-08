@@ -8,7 +8,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
 export default class ComponentListForm extends React.Component {
-    debouncedUpdate = debounce(this.forceUpdate.bind(this));
+    debouncedUpdate = debounce(() => this.forceUpdate());
     constructor(props) {
         super(props);
         this.state = {};
