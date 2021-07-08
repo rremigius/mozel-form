@@ -24,19 +24,23 @@ export default class Field extends React.Component<Props, State> {
 	}
 
 	renderBoolean(value?:primitive, label?:string) {
+		value = value !== undefined ? value : false;
+
 		return <div className="form-check form-switch">
 			<input
 				aria-label={label}
 				type="checkbox"
 				id={uniqueId("switch-")}
 				className="form-check-input"
-				checked={value as boolean}
+				checked={value as boolean || false}
 				onChange={event => this.change(event.currentTarget.checked)}
 			/>
 		</div>
 	}
 
 	renderString(value?:primitive, label?:string) {
+		value = value !== undefined ? value : "";
+
 		return <Form.Control
 			type="text"
 			aria-label={label}
@@ -46,6 +50,8 @@ export default class Field extends React.Component<Props, State> {
 	}
 
 	renderNumber(value?:primitive, label?:string) {
+		value = value !== undefined ? value : "";
+
 		return <Form.Control
 			type="number"
 			aria-label={label}

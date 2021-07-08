@@ -13,12 +13,15 @@ export default class Field extends React.Component {
             this.props.onChange(newValue);
     }
     renderBoolean(value, label) {
-        return _jsx("div", Object.assign({ className: "form-check form-switch" }, { children: _jsx("input", { "aria-label": label, type: "checkbox", id: uniqueId("switch-"), className: "form-check-input", checked: value, onChange: event => this.change(event.currentTarget.checked) }, void 0) }), void 0);
+        value = value !== undefined ? value : false;
+        return _jsx("div", Object.assign({ className: "form-check form-switch" }, { children: _jsx("input", { "aria-label": label, type: "checkbox", id: uniqueId("switch-"), className: "form-check-input", checked: value || false, onChange: event => this.change(event.currentTarget.checked) }, void 0) }), void 0);
     }
     renderString(value, label) {
+        value = value !== undefined ? value : "";
         return _jsx(Form.Control, { type: "text", "aria-label": label, value: value, onChange: event => this.change(event.currentTarget.value) }, void 0);
     }
     renderNumber(value, label) {
+        value = value !== undefined ? value : "";
         return _jsx(Form.Control, { type: "number", "aria-label": label, value: value, onChange: event => this.change(event.currentTarget.value) }, void 0);
     }
     render() {
