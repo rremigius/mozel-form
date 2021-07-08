@@ -18,10 +18,12 @@ type State = {};
 
 export default class ComponentListForm extends React.Component<Props, State> {
 	debouncedUpdate = debounce(()=>this.forceUpdate());
+	list:ComponentList<ReactView>
 
 	constructor(props:Props) {
 		super(props);
 		this.state = {};
+		this.list = this.props.list;
 	}
 
 	get collection() {
@@ -63,14 +65,14 @@ export default class ComponentListForm extends React.Component<Props, State> {
 
 	componentDidMount() {
 		// TS: update function does not use any callback so will be compatible anyway
-		this.props.list.events.change.on(this.debouncedUpdate as any);
-		this.props.list.events.add.on(this.debouncedUpdate as any);
-		this.props.list.events.remove.on(this.debouncedUpdate as any);
+		this.list.events.change.on(this.debouncedUpdate as any);
+		this.list.events.add.on(this.debouncedUpdate as any);
+		this.list.events.remove.on(this.debouncedUpdate as any);
 	}
 
 	componentWillUnmount() {
-		this.props.list.events.change.off(this.debouncedUpdate as any);
-		this.props.list.events.add.off(this.debouncedUpdate as any);
-		this.props.list.events.remove.off(this.debouncedUpdate as any);
+		this.list.events.change.off(this.debouncedUpdate as any);
+		this.list.events.add.off(this.debouncedUpdate as any);
+		this.list.events.remove.off(this.debouncedUpdate as any);
 	}
 }

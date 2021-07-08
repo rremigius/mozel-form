@@ -9,9 +9,11 @@ import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
 export default class ComponentListForm extends React.Component {
     debouncedUpdate = debounce(() => this.forceUpdate());
+    list;
     constructor(props) {
         super(props);
         this.state = {};
+        this.list = this.props.list;
     }
     get collection() {
         const collection = this.props.list.currentCollection;
@@ -36,14 +38,14 @@ export default class ComponentListForm extends React.Component {
     }
     componentDidMount() {
         // TS: update function does not use any callback so will be compatible anyway
-        this.props.list.events.change.on(this.debouncedUpdate);
-        this.props.list.events.add.on(this.debouncedUpdate);
-        this.props.list.events.remove.on(this.debouncedUpdate);
+        this.list.events.change.on(this.debouncedUpdate);
+        this.list.events.add.on(this.debouncedUpdate);
+        this.list.events.remove.on(this.debouncedUpdate);
     }
     componentWillUnmount() {
-        this.props.list.events.change.off(this.debouncedUpdate);
-        this.props.list.events.add.off(this.debouncedUpdate);
-        this.props.list.events.remove.off(this.debouncedUpdate);
+        this.list.events.change.off(this.debouncedUpdate);
+        this.list.events.add.off(this.debouncedUpdate);
+        this.list.events.remove.off(this.debouncedUpdate);
     }
 }
 //# sourceMappingURL=ComponentListForm.js.map
