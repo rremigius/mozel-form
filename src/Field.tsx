@@ -68,10 +68,8 @@ export default class Field extends React.Component<Props, State> {
 		}
 
 		return <div className="mozel-form-field">
-			<InputGroup>
-				{ label ? <Form.Label>{label}</Form.Label> : undefined }
-				{ field }
-			</InputGroup>
+			{ label ? <Form.Label>{label}</Form.Label> : undefined }
+			{ field }
 			{ this.props.error ? <Alert variant="danger">{this.props.error}</Alert> : undefined }
 		</div>
 	}

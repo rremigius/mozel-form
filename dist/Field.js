@@ -1,7 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React from "react";
 import { uniqueId } from "./utils";
-import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 export default class Field extends React.Component {
@@ -34,7 +33,7 @@ export default class Field extends React.Component {
         else {
             field = this.renderString(this.props.value, label);
         }
-        return _jsxs("div", Object.assign({ className: "mozel-form-field" }, { children: [_jsxs(InputGroup, { children: [label ? _jsx(Form.Label, { children: label }, void 0) : undefined, field] }, void 0), this.props.error ? _jsx(Alert, Object.assign({ variant: "danger" }, { children: this.props.error }), void 0) : undefined] }), void 0);
+        return _jsxs("div", Object.assign({ className: "mozel-form-field" }, { children: [label ? _jsx(Form.Label, { children: label }, void 0) : undefined, field, this.props.error ? _jsx(Alert, Object.assign({ variant: "danger" }, { children: this.props.error }), void 0) : undefined] }), void 0);
     }
 }
 //# sourceMappingURL=Field.js.map
