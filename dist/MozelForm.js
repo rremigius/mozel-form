@@ -6,7 +6,6 @@ import Mozel, { immediate } from "mozel";
 import log from "./log";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ListGroup from "react-bootstrap/ListGroup";
-import "./mozel-form.css";
 import ComponentSlotForm from "./ComponentSlotForm";
 import ComponentListForm from "./ComponentListForm";
 import Field from "./Field";
