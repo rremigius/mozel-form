@@ -10,7 +10,6 @@ import '@fortawesome/fontawesome-free/js/regular'
 import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
-import Mozel, {Collection} from "mozel";
 
 type Props = {
 	list:ComponentList<ReactView>

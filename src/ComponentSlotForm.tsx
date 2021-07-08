@@ -1,19 +1,25 @@
 import React from "react";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
-import {humanReadable} from "./utils";
+import {get, humanReadable} from "./utils";
 import ComponentSlot from "mozel-component/dist/Component/ComponentSlot";
-import {ReactView} from "mozel-component";
+import Component, {ReactView} from "mozel-component";
 import Button from "react-bootstrap/Button";
-import Mozel from "mozel";
+import Mozel, {schema} from "mozel";
 
 type Props = {
 	slot:ComponentSlot<ReactView>
 };
 type State = {};
 export default class ComponentSlotForm extends React.Component<Props, State> {
+	readonly slot:ComponentSlot<ReactView>;
+	readonly isRequired:boolean;
+
 	constructor(props:Props) {
 		super(props);
 		this.state = {};
+
+		this.slot = this.props.slot;
+		this.isRequired = get(this.slot.model.static.$schema(), this.slot.path + '.$required', false);
 	}
 
 	remove() {
@@ -27,7 +33,11 @@ export default class ComponentSlotForm extends React.Component<Props, State> {
 	renderForm(component:ReactView) {
 		return <div className="ms-4 d-flex justify-content-between align-items-start">
 			<div className="flex-grow-1">{component.render()}</div>
-			<Button variant="danger" onClick={event => this.remove()}><i className="fas fa-times"/></Button>
+			{
+				!this.isRequired
+					? <Button variant="danger" onClick={event => this.remove()}><i className="fas fa-times"/></Button>
+					: undefined
+			}
 		</div>
 	}
 

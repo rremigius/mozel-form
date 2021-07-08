@@ -1,4 +1,4 @@
-import Mozel, {Collection, collection, property} from "mozel";
+import Mozel, {Collection, collection, property, required} from "mozel";
 import MozelForm from "../../src/MozelForm";
 
 class BarModel extends Mozel {
@@ -16,8 +16,8 @@ class FooModel extends Mozel {
 	@collection(String)
 	strings!:Collection<string>;
 
-	@property(BarModel)
-	bar?:BarModel;
+	@property(BarModel, {required})
+	bar!:BarModel;
 
 	@collection(BarModel)
 	bars!:Collection<BarModel>;

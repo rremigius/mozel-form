@@ -6,6 +6,8 @@ declare type Props = {
 };
 declare type State = {};
 export default class ComponentSlotForm extends React.Component<Props, State> {
+    readonly slot: ComponentSlot<ReactView>;
+    readonly isRequired: boolean;
     constructor(props: Props);
     remove(): void;
     add(): void;

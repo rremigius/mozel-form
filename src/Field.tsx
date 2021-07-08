@@ -72,11 +72,9 @@ export default class Field extends React.Component<Props, State> {
 			field = this.renderString(this.props.value, label);
 		}
 
-		return <ListGroupItem>
-			<InputGroup>
-				{ label ? <Form.Label>{label}</Form.Label> : undefined }
-				{ field }
-			</InputGroup>
-		</ListGroupItem>
+		return <InputGroup>
+			{ label ? <Form.Label>{label}</Form.Label> : undefined }
+			{ field }
+		</InputGroup>
 	}
 }
