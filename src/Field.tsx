@@ -26,12 +26,16 @@ export default class Field extends React.Component<Props, State> {
 	renderBoolean(value?:primitive, label?:string) {
 		value = Property.parseValue(value, Boolean) as primitive;
 
-		return <Form.Switch
-			id={uniqueId('switch-')}
-			aria-label={label}
-			checked={value === true}
-			onChange={event => this.change(event.currentTarget.checked)}
-		/>
+		return <div className="form-check form-switch">
+			<input
+				aria-label={label}
+				type="checkbox"
+				id={uniqueId("switch-")}
+				className="form-check-input"
+				checked={value === true}
+				onChange={event => this.change(event.currentTarget.checked)}
+			/>
+		</div>
 	}
 
 	renderString(value?:primitive, label?:string) {
