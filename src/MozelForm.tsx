@@ -114,7 +114,7 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 		return <ListGroup className="mozel-form">
 			<Button variant="light" onClick={() => this.toggle()} className="text-start d-block w-100">
 				<FontAwesomeIcon icon={this.state.expanded ? 'caret-down' : 'caret-right'} className="me-2"/>
-				<span className="fst-italic">{humanReadable(this.model.static.type)}</span>
+				<span className="fst-italic">{this.model.$name}</span>
 			</Button>
 			<Collapse in={this.state.expanded}>
 				<div>

@@ -84,7 +84,7 @@ class MozelFormReactComponent extends ReactViewComponent {
                 fields.push(_jsx(ListGroupItem, { children: render }, property.name));
             });
         }
-        return _jsxs(ListGroup, Object.assign({ className: "mozel-form" }, { children: [_jsxs(Button, Object.assign({ variant: "light", onClick: () => this.toggle(), className: "text-start d-block w-100" }, { children: [_jsx(FontAwesomeIcon, { icon: this.state.expanded ? 'caret-down' : 'caret-right', className: "me-2" }, void 0), _jsx("span", Object.assign({ className: "fst-italic" }, { children: humanReadable(this.model.static.type) }), void 0)] }), void 0), _jsx(Collapse, Object.assign({ in: this.state.expanded }, { children: _jsx("div", { children: fields }, void 0) }), void 0)] }), void 0);
+        return _jsxs(ListGroup, Object.assign({ className: "mozel-form" }, { children: [_jsxs(Button, Object.assign({ variant: "light", onClick: () => this.toggle(), className: "text-start d-block w-100" }, { children: [_jsx(FontAwesomeIcon, { icon: this.state.expanded ? 'caret-down' : 'caret-right', className: "me-2" }, void 0), _jsx("span", Object.assign({ className: "fst-italic" }, { children: this.model.$name }), void 0)] }), void 0), _jsx(Collapse, Object.assign({ in: this.state.expanded }, { children: _jsx("div", { children: fields }, void 0) }), void 0)] }), void 0);
     }
     componentDidMount() {
         super.componentDidMount();
