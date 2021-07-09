@@ -59,6 +59,14 @@ export default class ComponentSlotForm extends React.Component<Props, State> {
 
 	render() {
 		const component = this.props.slot.current;
+		let render:JSX.Element|undefined = undefined;
+		if(component) {
+			render = this.slot.isReference
+				? <span className="fst-italic">{component.model.$name}</span>
+				: this.renderForm(component);
+		} else {
+			render = this.renderEmpty();
+		}
 
 		return <ListGroupItem>
 			<Button variant="light" onClick={() => this.toggle()} className="text-start d-block w-100">
@@ -66,8 +74,8 @@ export default class ComponentSlotForm extends React.Component<Props, State> {
 				{humanReadable(this.props.slot.path)}
 			</Button>
 			<Collapse in={this.state.expanded}>
-				<div> {/* Extra div required to prevent mixing of collapse classes and child element classes */}
-					{component ? this.renderForm(component) : this.renderEmpty()}
+				<div>
+					{render}
 				</div>
 			</Collapse>
 		</ListGroupItem>;

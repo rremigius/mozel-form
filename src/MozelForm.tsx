@@ -45,7 +45,6 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 		const slot = this.view.getComponentSlot(name);
 		if(slot) {
 			if(!isSubClass(slot.SyncType, ReactView)) return;
-			if(slot.isReference) return;
 			return this.renderComponentSlot(slot as unknown as ComponentSlot<ReactView>);
 		}
 		const list = this.view.getComponentList(name);
