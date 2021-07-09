@@ -12,16 +12,22 @@ import Mozel, {Collection} from "mozel";
 import {primitive} from "validation-kit";
 import {CollectionChangedEvent} from "mozel/dist/Collection";
 import Field from "./Field";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Collapse from "react-bootstrap/Collapse";
 
 type Props = {
 	collection:Collection<primitive>
 };
-type State = {};
+type State = {
+	expanded:boolean
+};
 
 export default class CollectionForm extends React.Component<Props, State> {
 	constructor(props:Props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			expanded: false
+		};
 	}
 
 	add() {
@@ -30,6 +36,10 @@ export default class CollectionForm extends React.Component<Props, State> {
 
 	remove(index:number) {
 		this.props.collection.removeIndex(index);
+	}
+
+	toggle() {
+		this.setState({expanded: !this.state.expanded});
 	}
 
 	getKey(item:Mozel|primitive, index:number) {
@@ -60,18 +70,23 @@ export default class CollectionForm extends React.Component<Props, State> {
 						error={error ? error.message : undefined}
 					/>
 				</div>
-				<Button variant="danger" onClick={event => this.remove(index)}><i className="fas fa-times"/></Button>
+				<Button variant="danger" onClick={() => this.remove(index)}><i className="fas fa-times"/></Button>
 			</ListGroupItem>
 		});
 
 		return <ListGroupItem>
-			<label>{humanReadable(this.props.collection.relation)}</label>
-			<ListGroup className="ms-4">
-				{elements}
-				<ListGroupItem className="d-flex justify-content-between align-items-start">
-					<Button variant="primary" onClick={event => this.add()}><i className="fas fa-plus"/></Button>
-				</ListGroupItem>
-			</ListGroup>
+			<Button variant="light" onClick={() => this.toggle()} className="text-start d-block w-100">
+				<FontAwesomeIcon icon={this.state.expanded ? 'caret-down' : 'caret-right'} className="me-2"/>
+				{humanReadable(this.props.collection.relation)}
+			</Button>
+			<Collapse in={this.state.expanded}>
+				<div>
+					{elements}
+					<ListGroupItem className="d-flex justify-content-between align-items-start">
+						<Button variant="primary" onClick={event => this.add()}><i className="fas fa-plus"/></Button>
+					</ListGroupItem>
+				</div>
+			</Collapse>
 		</ListGroupItem>;
 	}
 

@@ -38,15 +38,12 @@ const model = FooModel.create<FooModel>({
 });
 model.$strict = false;
 
-class MyForm extends MozelForm {
-	static Model = FooModel;
-	static fields = ['name', 'bar'];
-}
 const factory = MozelForm.createFactory();
-factory.register(MyForm);
+factory.register(MozelForm);
 
-const form = MyForm.create<MyForm>(model);
+const form = factory.create<MozelForm>(model);
 form.mount(document.getElementById('form')!);
+form.setExpanded(true);
 
 console.log(model);
 console.log(form);

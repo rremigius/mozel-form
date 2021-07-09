@@ -1,6 +1,6 @@
 import React from "react";
 import {ReactViewComponent, ReactViewComponentProps} from "mozel-component/dist/View/ReactView";
-import Component, {ReactView} from "mozel-component";
+import {ReactView} from "mozel-component";
 import {isPrimitive, isSubClass, primitive} from "validation-kit";
 import ComponentSlot from "mozel-component/dist/Component/ComponentSlot";
 import ComponentList from "mozel-component/dist/Component/ComponentList";
@@ -16,14 +16,27 @@ import CollectionForm from "./CollectionForm";
 import {humanReadable} from "./utils";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Property from "mozel/dist/Property";
-import View from "mozel-component/dist/View";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Button from "react-bootstrap/Button";
+import Collapse from "react-bootstrap/Collapse";
+import {ViewEvents} from "mozel-component/dist/View";
 
-type Props = ReactViewComponentProps<MozelForm>;
-type State = Record<string, primitive>;
+type Props = ReactViewComponentProps<MozelForm> & {
+	startExpanded?:boolean
+};
+type State = Record<string, primitive> & {
+	expanded:boolean;
+};
 class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 	constructor(props:Props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			expanded: this.props.startExpanded === true
+		};
+	}
+
+	toggle() {
+		this.setState({expanded: !this.state.expanded});
 	}
 
 	renderProperty(property:Property) {
@@ -99,7 +112,15 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 		}
 
 		return <ListGroup className="mozel-form">
-			{ fields }
+			<Button variant="light" onClick={() => this.toggle()} className="text-start d-block w-100">
+				<FontAwesomeIcon icon={this.state.expanded ? 'caret-down' : 'caret-right'} className="me-2"/>
+				<span className="fst-italic">{humanReadable(this.model.static.type)}</span>
+			</Button>
+			<Collapse in={this.state.expanded}>
+				<div>
+					{ fields }
+				</div>
+			</Collapse>
 		</ListGroup>
 	}
 
@@ -114,11 +135,26 @@ class MozelFormReactComponent extends ReactViewComponent<Props, State> {
 
 			this.setState({[property.name] : value});
 		}, {immediate});
+
+		this.watchEvent(this.view.events.stateChange, event => {
+			this.setState(event.state);
+		})
 	}
 }
 
+export class MozelFormStateChangedEvent {
+	constructor(public state:Record<string, any>) {}
+}
+export class MozelFormEvents extends ViewEvents {
+	stateChange = this.$event(MozelFormStateChangedEvent);
+}
+/**
+ * MozelForm can display any Mozel as a form, rendering inputs that will change the Mozel directly.
+ */
 export default class MozelForm extends ReactView {
 	static fields?:string[];
+	static Events = MozelFormEvents;
+	declare events:MozelFormEvents;
 
 	get static() {
 		return this.constructor as typeof MozelForm;
@@ -126,6 +162,14 @@ export default class MozelForm extends ReactView {
 
 	getReactComponent(): typeof React.Component {
 		return MozelFormReactComponent;
+	}
+
+	setState(state:Record<string, any>) {
+		this.events.stateChange.fire(new MozelFormStateChangedEvent(state));
+	}
+
+	setExpanded(expanded:boolean = true) {
+		this.setState({expanded});
 	}
 
 	onInit() {

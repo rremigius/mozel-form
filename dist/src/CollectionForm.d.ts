@@ -7,11 +7,14 @@ import { primitive } from "validation-kit";
 declare type Props = {
     collection: Collection<primitive>;
 };
-declare type State = {};
+declare type State = {
+    expanded: boolean;
+};
 export default class CollectionForm extends React.Component<Props, State> {
     constructor(props: Props);
     add(): void;
     remove(index: number): void;
+    toggle(): void;
     getKey(item: Mozel | primitive, index: number): import("mozel").alphanumeric;
     change(index: number, newValue: primitive): void;
     valueToString(value: primitive): string;

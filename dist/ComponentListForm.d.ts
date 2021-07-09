@@ -8,7 +8,9 @@ import '@fortawesome/fontawesome-free/js/regular';
 declare type Props = {
     list: ComponentList<ReactView>;
 };
-declare type State = {};
+declare type State = {
+    expanded: boolean;
+};
 export default class ComponentListForm extends React.Component<Props, State> {
     debouncedUpdate: import("lodash").DebouncedFunc<() => void>;
     list: ComponentList<ReactView>;
@@ -17,6 +19,7 @@ export default class ComponentListForm extends React.Component<Props, State> {
     get collection(): import("mozel").Collection<import("mozel").default>;
     add(): void;
     remove(index: number): void;
+    toggle(): void;
     getKey(view: ReactView): import("mozel").alphanumeric;
     render(): JSX.Element;
     componentDidMount(): void;

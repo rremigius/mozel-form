@@ -10,11 +10,15 @@ import '@fortawesome/fontawesome-free/js/regular'
 import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Collapse from "react-bootstrap/Collapse";
 
 type Props = {
 	list:ComponentList<ReactView>
 };
-type State = {};
+type State = {
+	expanded:boolean
+};
 
 export default class ComponentListForm extends React.Component<Props, State> {
 	debouncedUpdate = debounce(()=>{
@@ -27,7 +31,9 @@ export default class ComponentListForm extends React.Component<Props, State> {
 
 	constructor(props:Props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			expanded: false
+		};
 		this.list = this.props.list;
 
 		// TODO: implement componentDidUpdate
@@ -47,6 +53,10 @@ export default class ComponentListForm extends React.Component<Props, State> {
 		this.collection.removeIndex(index);
 	}
 
+	toggle() {
+		this.setState({expanded: !this.state.expanded});
+	}
+
 	getKey(view:ReactView) {
 		return view.model.gid;
 	}
@@ -60,13 +70,18 @@ export default class ComponentListForm extends React.Component<Props, State> {
 		});
 
 		return <ListGroupItem>
-			<label>{humanReadable(this.props.list.path)}</label>
-			<ListGroup className="ms-4">
-				{elements}
-				<ListGroupItem className="d-flex justify-content-between align-items-start">
-					<Button variant="primary" onClick={event => this.add()}><i className="fas fa-plus"/></Button>
-				</ListGroupItem>
-			</ListGroup>
+			<Button variant="light" onClick={() => this.toggle()} className="text-start d-block w-100">
+				<FontAwesomeIcon icon={this.state.expanded ? 'caret-down' : 'caret-right'} className="me-2"/>
+				{humanReadable(this.props.list.path)}
+			</Button>
+			<Collapse in={this.state.expanded}>
+				<div>
+					{elements}
+					<ListGroupItem className="d-flex justify-content-between align-items-start">
+						<Button variant="primary" onClick={event => this.add()}><i className="fas fa-plus"/></Button>
+					</ListGroupItem>
+				</div>
+			</Collapse>
 		</ListGroupItem>;
 	}
 

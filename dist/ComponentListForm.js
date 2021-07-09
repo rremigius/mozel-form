@@ -4,9 +4,10 @@ import { debounce, humanReadable } from "./utils";
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
-import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Collapse from "react-bootstrap/Collapse";
 export default class ComponentListForm extends React.Component {
     debouncedUpdate = debounce(() => {
         // Because of the debounce, it is possible that the component gets unmounted before next tick.
@@ -19,7 +20,9 @@ export default class ComponentListForm extends React.Component {
     unmount = false;
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            expanded: false
+        };
         this.list = this.props.list;
         // TODO: implement componentDidUpdate
     }
@@ -35,6 +38,9 @@ export default class ComponentListForm extends React.Component {
     remove(index) {
         this.collection.removeIndex(index);
     }
+    toggle() {
+        this.setState({ expanded: !this.state.expanded });
+    }
     getKey(view) {
         return view.model.gid;
     }
@@ -42,7 +48,7 @@ export default class ComponentListForm extends React.Component {
         const elements = this.props.list.map((view, index) => {
             return _jsxs(ListGroupItem, Object.assign({ className: "d-flex justify-content-between align-items-start" }, { children: [_jsx("div", Object.assign({ className: "flex-grow-1" }, { children: view.render() }), void 0), _jsx(Button, Object.assign({ variant: "danger", onClick: event => this.remove(index) }, { children: _jsx("i", { className: "fas fa-times" }, void 0) }), void 0)] }), this.getKey(view));
         });
-        return _jsxs(ListGroupItem, { children: [_jsx("label", { children: humanReadable(this.props.list.path) }, void 0), _jsxs(ListGroup, Object.assign({ className: "ms-4" }, { children: [elements, _jsx(ListGroupItem, Object.assign({ className: "d-flex justify-content-between align-items-start" }, { children: _jsx(Button, Object.assign({ variant: "primary", onClick: event => this.add() }, { children: _jsx("i", { className: "fas fa-plus" }, void 0) }), void 0) }), void 0)] }), void 0)] }, void 0);
+        return _jsxs(ListGroupItem, { children: [_jsxs(Button, Object.assign({ variant: "light", onClick: () => this.toggle(), className: "text-start d-block w-100" }, { children: [_jsx(FontAwesomeIcon, { icon: this.state.expanded ? 'caret-down' : 'caret-right', className: "me-2" }, void 0), humanReadable(this.props.list.path)] }), void 0), _jsx(Collapse, Object.assign({ in: this.state.expanded }, { children: _jsxs("div", { children: [elements, _jsx(ListGroupItem, Object.assign({ className: "d-flex justify-content-between align-items-start" }, { children: _jsx(Button, Object.assign({ variant: "primary", onClick: event => this.add() }, { children: _jsx("i", { className: "fas fa-plus" }, void 0) }), void 0) }), void 0)] }, void 0) }), void 0)] }, void 0);
     }
     componentDidMount() {
         // TS: update function does not use any callback so will be compatible anyway
