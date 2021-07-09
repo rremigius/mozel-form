@@ -26,7 +26,10 @@ export default class ComponentSlotForm extends React.Component {
         this.setState({ expanded: !this.state.expanded });
     }
     renderForm(component) {
-        return _jsxs("div", Object.assign({ className: "ms-4 d-flex justify-content-between align-items-start" }, { children: [_jsx("div", Object.assign({ className: "flex-grow-1" }, { children: component.render({ startExpanded: true }) }), void 0), !this.isRequired
+        const render = this.props.slot.isReference
+            ? _jsx("span", Object.assign({ className: "fst-italic" }, { children: component.model.$name }), void 0)
+            : component.render({ startExpanded: true });
+        return _jsxs(ListGroupItem, Object.assign({ className: "d-flex justify-content-between align-items-start" }, { children: [_jsx("div", Object.assign({ className: "flex-grow-1 pt-2" }, { children: render }), void 0), !this.isRequired
                     ? _jsx(Button, Object.assign({ variant: "danger", onClick: () => this.remove() }, { children: _jsx(FontAwesomeIcon, { icon: "times" }, void 0) }), void 0)
                     : undefined] }), void 0);
     }
@@ -35,16 +38,7 @@ export default class ComponentSlotForm extends React.Component {
     }
     render() {
         const component = this.props.slot.current;
-        let render = undefined;
-        if (component) {
-            render = this.slot.isReference
-                ? _jsx("span", Object.assign({ className: "fst-italic" }, { children: component.model.$name }), void 0)
-                : this.renderForm(component);
-        }
-        else {
-            render = this.renderEmpty();
-        }
-        return _jsxs(ListGroupItem, { children: [_jsxs(Button, Object.assign({ variant: "light", onClick: () => this.toggle(), className: "text-start d-block w-100" }, { children: [_jsx(FontAwesomeIcon, { icon: this.state.expanded ? 'caret-down' : 'caret-right', className: "me-2" }, void 0), humanReadable(this.props.slot.path)] }), void 0), _jsx(Collapse, Object.assign({ in: this.state.expanded }, { children: _jsx("div", { children: render }, void 0) }), void 0)] }, void 0);
+        return _jsxs("div", Object.assign({ className: "component-slot-form" }, { children: [_jsxs(Button, Object.assign({ variant: "light", onClick: () => this.toggle(), className: "text-start d-block w-100" }, { children: [_jsx(FontAwesomeIcon, { icon: this.state.expanded ? 'caret-down' : 'caret-right', className: "me-2" }, void 0), humanReadable(this.props.slot.path)] }), void 0), _jsx(Collapse, Object.assign({ in: this.state.expanded }, { children: _jsx("div", { children: component ? this.renderForm(component) : this.renderEmpty() }, void 0) }), void 0)] }), void 0);
     }
 }
 //# sourceMappingURL=ComponentSlotForm.js.map

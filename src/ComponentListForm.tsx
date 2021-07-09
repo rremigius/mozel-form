@@ -64,7 +64,7 @@ export default class ComponentListForm extends React.Component<Props, State> {
 	render() {
 		const elements = this.props.list.map((view, index) => {
 			const render = this.props.list.isReference
-				? <span className="fst-italic">{view.model.$name}</span>
+				? <div className="fst-italic pt-2">{view.model.$name}</div>
 				: view.render();
 
 			return <ListGroupItem className="d-flex justify-content-between align-items-start" key={this.getKey(view)}>
@@ -73,7 +73,7 @@ export default class ComponentListForm extends React.Component<Props, State> {
 			</ListGroupItem>
 		});
 
-		return <ListGroupItem>
+		return <div className="component-list-form">
 			<Button variant="light" onClick={() => this.toggle()} className="text-start d-block w-100">
 				<FontAwesomeIcon icon={this.state.expanded ? 'caret-down' : 'caret-right'} className="me-2"/>
 				{humanReadable(this.props.list.path)}
@@ -82,11 +82,11 @@ export default class ComponentListForm extends React.Component<Props, State> {
 				<div>
 					{elements}
 					<ListGroupItem className="d-flex justify-content-between align-items-start">
-						<Button variant="primary" onClick={event => this.add()}><i className="fas fa-plus"/></Button>
+						<Button variant="primary" onClick={() => this.add()}><i className="fas fa-plus"/></Button>
 					</ListGroupItem>
 				</div>
 			</Collapse>
-		</ListGroupItem>;
+		</div>;
 	}
 
 	componentDidMount() {

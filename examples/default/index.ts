@@ -1,4 +1,4 @@
-import Mozel, {Collection, collection, property, required} from "mozel";
+import Mozel, {Collection, collection, property, required, reference} from "mozel";
 import MozelForm from "../../src/MozelForm";
 import Component from "mozel-component";
 
@@ -25,23 +25,31 @@ class FooModel extends Mozel {
 
 	@property(FooModel)
 	recursion?:FooModel;
+
+	@collection(FooModel, {reference})
+	references!:Collection<FooModel>
+
+	@property(FooModel, {reference})
+	reference?:FooModel
 }
 
 const model = FooModel.create<FooModel>({
+	gid: 'root',
 	name: 'foo',
 	active: true,
 	bar: {
 		number: 123
 	},
 	bars: [{number: 1}, {number: 12}],
-	numbers: [1]
+	numbers: [1],
+	references: [{gid: 'root'}],
+	reference: {gid: 'root'}
 });
-model.$strict = false;
 
 const factory = MozelForm.createFactory();
 factory.register(MozelForm);
 
-const form = factory.create<MozelForm>(model);
+const form = factory.createAndResolveReferences<MozelForm>(model);
 form.mount(document.getElementById('form')!);
 form.setExpanded(true);
 

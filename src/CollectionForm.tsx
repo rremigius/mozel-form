@@ -74,7 +74,7 @@ export default class CollectionForm extends React.Component<Props, State> {
 			</ListGroupItem>
 		});
 
-		return <ListGroupItem>
+		return <div className="collection-form">
 			<Button variant="light" onClick={() => this.toggle()} className="text-start d-block w-100">
 				<FontAwesomeIcon icon={this.state.expanded ? 'caret-down' : 'caret-right'} className="me-2"/>
 				{humanReadable(this.props.collection.relation)}
@@ -87,7 +87,7 @@ export default class CollectionForm extends React.Component<Props, State> {
 					</ListGroupItem>
 				</div>
 			</Collapse>
-		</ListGroupItem>;
+		</div>;
 	}
 
 	componentDidMount() {

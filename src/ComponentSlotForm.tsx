@@ -41,14 +41,18 @@ export default class ComponentSlotForm extends React.Component<Props, State> {
 	}
 
 	renderForm(component:ReactView) {
-		return <div className="ms-4 d-flex justify-content-between align-items-start">
-			<div className="flex-grow-1">{component.render({startExpanded: true})}</div>
+		const render = this.props.slot.isReference
+			? <span className="fst-italic">{component.model.$name}</span>
+			: component.render({startExpanded: true})
+
+		return <ListGroupItem className="d-flex justify-content-between align-items-start">
+			<div className="flex-grow-1 pt-2">{ render }</div>
 			{
 				!this.isRequired
 					? <Button variant="danger" onClick={() => this.remove()}><FontAwesomeIcon icon="times"/></Button>
 					: undefined
 			}
-		</div>
+		</ListGroupItem>
 	}
 
 	renderEmpty() {
@@ -59,25 +63,17 @@ export default class ComponentSlotForm extends React.Component<Props, State> {
 
 	render() {
 		const component = this.props.slot.current;
-		let render:JSX.Element|undefined = undefined;
-		if(component) {
-			render = this.slot.isReference
-				? <span className="fst-italic">{component.model.$name}</span>
-				: this.renderForm(component);
-		} else {
-			render = this.renderEmpty();
-		}
 
-		return <ListGroupItem>
+		return <div className="component-slot-form">
 			<Button variant="light" onClick={() => this.toggle()} className="text-start d-block w-100">
 				<FontAwesomeIcon icon={this.state.expanded ? 'caret-down' : 'caret-right'} className="me-2"/>
 				{humanReadable(this.props.slot.path)}
 			</Button>
 			<Collapse in={this.state.expanded}>
 				<div>
-					{render}
+					{ component ? this.renderForm(component) : this.renderEmpty() }
 				</div>
 			</Collapse>
-		</ListGroupItem>;
+		</div>;
 	}
 }

@@ -37,8 +37,6 @@ class MozelFormReactComponent extends ReactViewComponent {
         if (list) {
             if (!isSubClass(list.SyncType, ReactView))
                 return;
-            if (list.isReference)
-                return;
             return this.renderComponentList(list);
         }
         return this.renderField(property);
