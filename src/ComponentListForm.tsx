@@ -63,8 +63,12 @@ export default class ComponentListForm extends React.Component<Props, State> {
 
 	render() {
 		const elements = this.props.list.map((view, index) => {
+			const render = this.props.list.isReference
+				? <span className="fst-italic">{view.model.$name}</span>
+				: view.render();
+
 			return <ListGroupItem className="d-flex justify-content-between align-items-start" key={this.getKey(view)}>
-				<div className="flex-grow-1">{view.render()}</div>
+				<div className="flex-grow-1">{render}</div>
 				<Button variant="danger" onClick={event => this.remove(index)}><i className="fas fa-times"/></Button>
 			</ListGroupItem>
 		});
