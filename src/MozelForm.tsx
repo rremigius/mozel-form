@@ -1,6 +1,5 @@
 import React from "react";
-import {ReactViewComponent, ReactViewComponentProps} from "mozel-component/dist/View/ReactView";
-import {ReactView} from "mozel-component";
+import ReactView, {ReactViewComponent, ReactViewComponentProps} from "mozel-component/dist/View/ReactView";
 import {isPrimitive, isSubClass, primitive} from "validation-kit";
 import ComponentSlot from "mozel-component/dist/Component/ComponentSlot";
 import ComponentList from "mozel-component/dist/Component/ComponentList";
@@ -150,6 +149,25 @@ export class MozelFormEvents extends ViewEvents {
  * MozelForm can display any Mozel as a form, rendering inputs that will change the Mozel directly.
  */
 export default class MozelForm extends ReactView {
+	/* TODO: create 'extend' method to define fields, e.g.:
+	const Form = MozelForm.extend({
+		Model: MyModel,
+		startExpanded: true
+		fields: [{
+			property: schema(MyModel).name
+		}, {
+			property: schema(MyModel).age,
+			disabled: true
+		}, {
+			property: schema(MyModel).description,
+			input: 'textarea'
+		}, {
+			property: schema(MyModel).address,
+			startExpanded: true
+		}]
+	});
+	 */
+
 	static fields?:string[];
 	static Events = MozelFormEvents;
 	declare events:MozelFormEvents;

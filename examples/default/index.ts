@@ -49,7 +49,7 @@ const model = FooModel.create<FooModel>({
 const factory = MozelForm.createFactory();
 factory.register(MozelForm);
 
-const form = factory.createAndResolveReferences<MozelForm>(model);
+const form = factory.create<MozelForm>(model);
 form.mount(document.getElementById('form')!);
 form.setExpanded(true);
 

@@ -1,10 +1,10 @@
 /// <reference types="lodash" />
 import React from "react";
 import ComponentList from "mozel-component/dist/Component/ComponentList";
-import { ReactView } from "mozel-component";
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
+import ReactView from "mozel-component/dist/View/ReactView";
 declare type Props = {
     list: ComponentList<ReactView>;
 };

@@ -92,6 +92,6 @@ export default class CollectionForm extends React.Component<Props, State> {
 
 	componentDidMount() {
 		const debouncedUpdate = debounce(this.forceUpdate.bind(this));
-		this.props.collection.on(CollectionChangedEvent, ()=>debouncedUpdate());
+		this.props.collection.events.changed.on(()=>debouncedUpdate());
 	}
 }

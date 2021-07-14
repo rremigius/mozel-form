@@ -1,17 +1,15 @@
 import React from "react";
 import {debounce, humanReadable} from "./utils";
 import ComponentList from "mozel-component/dist/Component/ComponentList";
-import {ReactView} from "mozel-component";
 
 import '@fortawesome/fontawesome-free/js/fontawesome'
 import '@fortawesome/fontawesome-free/js/solid'
 import '@fortawesome/fontawesome-free/js/regular'
-
-import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Collapse from "react-bootstrap/Collapse";
+import ReactView from "mozel-component/dist/View/ReactView";
 
 type Props = {
 	list:ComponentList<ReactView>

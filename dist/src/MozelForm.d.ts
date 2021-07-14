@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactView } from "mozel-component";
+import ReactView from "mozel-component/dist/View/ReactView";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ViewEvents } from "mozel-component/dist/View";
 export declare class MozelFormStateChangedEvent {
@@ -7,7 +7,7 @@ export declare class MozelFormStateChangedEvent {
     constructor(state: Record<string, any>);
 }
 export declare class MozelFormEvents extends ViewEvents {
-    stateChange: import("mozel-component").EventEmitter<MozelFormStateChangedEvent>;
+    stateChange: import("event-interface-mixin").EventEmitter<MozelFormStateChangedEvent>;
 }
 /**
  * MozelForm can display any Mozel as a form, rendering inputs that will change the Mozel directly.

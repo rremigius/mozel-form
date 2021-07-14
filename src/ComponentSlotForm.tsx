@@ -2,11 +2,11 @@ import React from "react";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import {get, humanReadable} from "./utils";
 import ComponentSlot from "mozel-component/dist/Component/ComponentSlot";
-import {ReactView} from "mozel-component";
 import Button from "react-bootstrap/Button";
 import Mozel from "mozel";
 import Collapse from "react-bootstrap/Collapse";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import ReactView from "mozel-component/dist/View/ReactView";
 
 type Props = {
 	slot:ComponentSlot<ReactView>
