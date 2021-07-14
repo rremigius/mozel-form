@@ -1,6 +1,6 @@
 import React from "react";
 import ComponentSlot from "mozel-component/dist/Component/ComponentSlot";
-import { ReactView } from "mozel-component";
+import ReactView from "mozel-component/dist/View/ReactView";
 declare type Props = {
     slot: ComponentSlot<ReactView>;
 };

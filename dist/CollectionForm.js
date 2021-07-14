@@ -7,7 +7,6 @@ import '@fortawesome/fontawesome-free/js/regular';
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
 import Mozel from "mozel";
-import { CollectionChangedEvent } from "mozel/dist/Collection";
 import Field from "./Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Collapse from "react-bootstrap/Collapse";
@@ -50,7 +49,7 @@ export default class CollectionForm extends React.Component {
     }
     componentDidMount() {
         const debouncedUpdate = debounce(this.forceUpdate.bind(this));
-        this.props.collection.on(CollectionChangedEvent, () => debouncedUpdate());
+        this.props.collection.events.changed.on(() => debouncedUpdate());
     }
 }
 //# sourceMappingURL=CollectionForm.js.map
