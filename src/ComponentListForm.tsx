@@ -55,8 +55,8 @@ export default class ComponentListForm extends React.Component<Props, State> {
 		this.setState({expanded: !this.state.expanded});
 	}
 
-	getKey(view:ReactView) {
-		return view.model.gid;
+	getKey(view:ReactView, index:number) {
+		return view.model.gid + "-" + index;
 	}
 
 	render() {
@@ -65,7 +65,7 @@ export default class ComponentListForm extends React.Component<Props, State> {
 				? <div className="fst-italic pt-2">{view.model.$name}</div>
 				: view.render();
 
-			return <ListGroupItem className="d-flex justify-content-between align-items-start" key={this.getKey(view)}>
+			return <ListGroupItem className="d-flex justify-content-between align-items-start" key={this.getKey(view, index)}>
 				<div className="flex-grow-1">{render}</div>
 				<Button variant="danger" onClick={event => this.remove(index)}><i className="fas fa-times"/></Button>
 			</ListGroupItem>

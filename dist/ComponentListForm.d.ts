@@ -20,7 +20,7 @@ export default class ComponentListForm extends React.Component<Props, State> {
     add(): void;
     remove(index: number): void;
     toggle(): void;
-    getKey(view: ReactView): import("mozel").alphanumeric;
+    getKey(view: ReactView, index: number): string;
     render(): JSX.Element;
     componentDidMount(): void;
     componentWillUnmount(): void;

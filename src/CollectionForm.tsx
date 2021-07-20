@@ -46,7 +46,7 @@ export default class CollectionForm extends React.Component<Props, State> {
 		if(item instanceof Mozel) {
 			return item.gid;
 		}
-		return index + item.toString();
+		return index + "-" + item.toString();
 	}
 
 	change(index:number, newValue:primitive) {
