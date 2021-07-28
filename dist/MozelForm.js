@@ -81,6 +81,8 @@ class MozelFormReactComponent extends ReactViewComponent {
             // Only render specified properties
             this.view.static.definition.fields.forEach(field => {
                 const property = this.view.getProperty(field);
+                if (!property)
+                    return;
                 const render = this.renderProperty(property, isPlainObject(field) ? field : undefined);
                 if (render)
                     fields.push(_jsx(ListGroupItem, { children: render }, property.name));
@@ -154,6 +156,8 @@ export default class MozelForm extends ReactView {
         if (this.static.definition.fields) {
             this.static.definition.fields.forEach(field => {
                 const property = this.getProperty(field);
+                if (!property)
+                    return;
                 if (!(property.isMozelType() || property.isCollectionType(Mozel))) {
                     return; // Not setting up components for primitive types
                 }
