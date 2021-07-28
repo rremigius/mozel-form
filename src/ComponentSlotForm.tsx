@@ -1,15 +1,17 @@
 import React from "react";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
-import {get, humanReadable} from "./utils";
+import {get, humanReadable, isPlainObject} from "./utils";
 import ComponentSlot from "mozel-component/dist/Component/ComponentSlot";
 import Button from "react-bootstrap/Button";
 import Mozel from "mozel";
 import Collapse from "react-bootstrap/Collapse";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ReactView from "mozel-component/dist/View/ReactView";
+import {FormDefinition} from "./MozelForm";
 
 type Props = {
 	slot:ComponentSlot<ReactView>
+	field?:FormDefinition
 };
 type State = {
 	expanded:boolean;
@@ -21,7 +23,7 @@ export default class ComponentSlotForm extends React.Component<Props, State> {
 	constructor(props:Props) {
 		super(props);
 		this.state = {
-			expanded: false
+			expanded: get(props.field, 'startExpanded', false)
 		};
 
 		this.slot = this.props.slot;
@@ -41,9 +43,10 @@ export default class ComponentSlotForm extends React.Component<Props, State> {
 	}
 
 	renderForm(component:ReactView) {
+		const field = isPlainObject(this.props.field) ? this.props.field : {};
 		const render = this.props.slot.isReference
 			? <span className="fst-italic">{component.model.$name}</span>
-			: component.render({startExpanded: true})
+			: component.render(field)
 
 		return <ListGroupItem className="d-flex justify-content-between align-items-start">
 			<div className="flex-grow-1 pt-2">{ render }</div>

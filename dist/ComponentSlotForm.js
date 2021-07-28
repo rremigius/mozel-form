@@ -1,7 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React from "react";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
-import { get, humanReadable } from "./utils";
+import { get, humanReadable, isPlainObject } from "./utils";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +11,7 @@ export default class ComponentSlotForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            expanded: false
+            expanded: get(props.field, 'startExpanded', false)
         };
         this.slot = this.props.slot;
         this.isRequired = get(this.slot.model.static.$schema(), this.slot.path + '.$required', false);
@@ -26,9 +26,10 @@ export default class ComponentSlotForm extends React.Component {
         this.setState({ expanded: !this.state.expanded });
     }
     renderForm(component) {
+        const field = isPlainObject(this.props.field) ? this.props.field : {};
         const render = this.props.slot.isReference
             ? _jsx("span", Object.assign({ className: "fst-italic" }, { children: component.model.$name }), void 0)
-            : component.render({ startExpanded: true });
+            : component.render(field);
         return _jsxs(ListGroupItem, Object.assign({ className: "d-flex justify-content-between align-items-start" }, { children: [_jsx("div", Object.assign({ className: "flex-grow-1 pt-2" }, { children: render }), void 0), !this.isRequired
                     ? _jsx(Button, Object.assign({ variant: "danger", onClick: () => this.remove() }, { children: _jsx(FontAwesomeIcon, { icon: "times" }, void 0) }), void 0)
                     : undefined] }), void 0);

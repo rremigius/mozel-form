@@ -5,8 +5,10 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import ReactView from "mozel-component/dist/View/ReactView";
+import { FormDefinition } from "./MozelForm";
 declare type Props = {
     list: ComponentList<ReactView>;
+    field?: FormDefinition;
 };
 declare type State = {
     expanded: boolean;

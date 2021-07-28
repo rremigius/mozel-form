@@ -9,28 +9,28 @@ class BarModel extends Mozel {
 
 class FooModel extends Mozel {
 	@property(String)
-	name?:string;
+	declare name?:string;
 
 	@property(Boolean)
-	active?:boolean;
+	declare active?:boolean;
 
 	@collection(Number)
-	numbers!:Collection<number>;
+	declare numbers:Collection<number>;
 
 	@property(BarModel, {required})
-	bar!:BarModel;
+	declare bar:BarModel;
 
 	@collection(BarModel)
-	bars!:Collection<BarModel>;
+	declare bars:Collection<BarModel>;
 
 	@property(FooModel)
-	recursion?:FooModel;
+	declare recursion?:FooModel;
 
 	@collection(FooModel, {reference})
-	references!:Collection<FooModel>
+	declare references:Collection<FooModel>
 
 	@property(FooModel, {reference})
-	reference?:FooModel
+	declare reference?:FooModel
 }
 
 const model = FooModel.create<FooModel>({
@@ -46,10 +46,20 @@ const model = FooModel.create<FooModel>({
 	reference: {gid: 'root'}
 });
 
-const factory = MozelForm.createFactory();
-factory.register(MozelForm);
+class FooForm extends MozelForm {
+	static Model = FooModel;
+	static definition = {
+		fields: [
+			{property: 'name', input: 'textarea'},
+			{property: 'bar', startExpanded: true, disabled: true},
+			'bars', 'numbers', 'references', 'reference'
+		]
+	}
+}
+const factory = FooForm.createFactory();
+factory.register(FooForm);
 
-const form = factory.create<MozelForm>(model);
+const form = factory.create<FooForm>(model);
 form.mount(document.getElementById('form')!);
 form.setExpanded(true);
 

@@ -1,8 +1,10 @@
 import React from "react";
 import ComponentSlot from "mozel-component/dist/Component/ComponentSlot";
 import ReactView from "mozel-component/dist/View/ReactView";
+import { FormDefinition } from "./MozelForm";
 declare type Props = {
     slot: ComponentSlot<ReactView>;
+    field?: FormDefinition;
 };
 declare type State = {
     expanded: boolean;

@@ -8,7 +8,7 @@ import ComponentSlotForm from "./ComponentSlotForm";
 import ComponentListForm from "./ComponentListForm";
 import Field from "./Field";
 import CollectionForm from "./CollectionForm";
-import { humanReadable } from "./utils";
+import { humanReadable, isFunction, isString, isPlainObject } from "./utils";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "react-bootstrap/Button";
@@ -24,29 +24,33 @@ class MozelFormReactComponent extends ReactViewComponent {
     toggle() {
         this.setState({ expanded: !this.state.expanded });
     }
-    renderProperty(property) {
+    renderProperty(property, field) {
         const name = property.name;
+        if (this.props.disabled) {
+            // Override disabled property of sub forms and fields
+            field = { ...field, disabled: true };
+        }
         const slot = this.view.getComponentSlot(name);
         if (slot) {
             if (!isSubClass(slot.SyncType, ReactView))
                 return;
-            return this.renderComponentSlot(slot);
+            return this.renderComponentSlot(slot, field);
         }
         const list = this.view.getComponentList(name);
         if (list) {
             if (!isSubClass(list.SyncType, ReactView))
                 return;
-            return this.renderComponentList(list);
+            return this.renderComponentList(list, field);
         }
-        return this.renderField(property);
+        return this.renderField(property, field);
     }
-    renderComponentSlot(slot) {
-        return _jsx(ComponentSlotForm, { slot: slot }, void 0);
+    renderComponentSlot(slot, field) {
+        return _jsx(ComponentSlotForm, { slot: slot, field: field }, void 0);
     }
-    renderComponentList(list) {
-        return _jsx(ComponentListForm, { list: list }, void 0);
+    renderComponentList(list, field) {
+        return _jsx(ComponentListForm, { list: list, field: field }, void 0);
     }
-    renderField(property) {
+    renderField(property, field) {
         if (property.isMozelType())
             return;
         if (property.isCollectionType(Mozel))
@@ -54,20 +58,30 @@ class MozelFormReactComponent extends ReactViewComponent {
         if (property.isCollectionType()) {
             return this.renderPrimitiveCollection(property.value);
         }
-        return _jsx(Field, { type: property.type, label: humanReadable(property.name), value: property.value, onChange: newValue => property.set(newValue, true), error: property.error && property.error.message }, void 0);
+        let type;
+        let disabled = false;
+        if (field && !isString(field)) {
+            if (isFunction(field.input)) {
+                return field.input(property, field);
+            }
+            type = field.input;
+            disabled = field.disabled === true;
+        }
+        else {
+            type = property.type;
+        }
+        return _jsx(Field, { type: type, label: humanReadable(property.name), value: property.value, onChange: newValue => property.set(newValue, true), error: property.error && property.error.message, disabled: disabled }, void 0);
     }
-    renderPrimitiveCollection(collection) {
-        return _jsx(CollectionForm, { collection: collection }, void 0);
+    renderPrimitiveCollection(collection, field) {
+        return _jsx(CollectionForm, { collection: collection, field: field }, void 0);
     }
     render() {
         const fields = [];
-        if (this.view.static.fields) {
+        if (this.view.static.definition.fields) {
             // Only render specified properties
-            this.view.static.fields.forEach(field => {
-                const property = this.model.$property(field);
-                if (!property)
-                    return;
-                const render = this.renderProperty(property);
+            this.view.static.definition.fields.forEach(field => {
+                const property = this.view.getProperty(field);
+                const render = this.renderProperty(property, isPlainObject(field) ? field : undefined);
                 if (render)
                     fields.push(_jsx(ListGroupItem, { children: render }, property.name));
             });
@@ -110,28 +124,21 @@ export class MozelFormEvents extends ViewEvents {
  * MozelForm can display any Mozel as a form, rendering inputs that will change the Mozel directly.
  */
 export default class MozelForm extends ReactView {
-    /* TODO: create 'extend' method to define fields, e.g.:
-    const Form = MozelForm.extend({
-        Model: MyModel,
-        startExpanded: true
-        fields: [{
-            property: schema(MyModel).name
-        }, {
-            property: schema(MyModel).age,
-            disabled: true
-        }, {
-            property: schema(MyModel).description,
-            input: 'textarea'
-        }, {
-            property: schema(MyModel).address,
-            startExpanded: true
-        }]
-    });
-     */
-    static fields;
+    static definition = {};
     static Events = MozelFormEvents;
     get static() {
         return this.constructor;
+    }
+    getProperty(field) {
+        if (isString(field)) {
+            return this.model.$property(field);
+        }
+        else {
+            if (!field.property)
+                throw new Error(`No property defined on field definition.`);
+            let propertyName = isString(field.property) ? field.property : field.property.$path;
+            return this.model.$property(propertyName);
+        }
     }
     getReactComponent() {
         return MozelFormReactComponent;
@@ -144,15 +151,36 @@ export default class MozelForm extends ReactView {
     }
     onInit() {
         super.onInit();
-        this.model.$eachProperty(property => {
-            if (property.isMozelType()) {
-                return this.setupSubComponent(property, MozelForm);
-            }
-            // Mozel Collection
-            if (property.isCollectionType() && isSubClass(property.value.getType(), Mozel)) {
-                return this.setupSubComponents(property, MozelForm);
-            }
-        });
+        if (this.static.definition.fields) {
+            this.static.definition.fields.forEach(field => {
+                const property = this.getProperty(field);
+                if (!(property.isMozelType() || property.isCollectionType(Mozel))) {
+                    return; // Not setting up components for primitive types
+                }
+                const Form = isString(field) ? MozelForm : field.input || MozelForm;
+                if (!(isSubClass(Form, MozelForm))) {
+                    throw new Error(`Can only use MozelForm for non-primitive values.`);
+                }
+                if (property.isCollectionType()) {
+                    return this.setupSubComponents(property, Form);
+                }
+                this.setupSubComponent(property, Form);
+            });
+        }
+        else {
+            this.model.$eachProperty(property => {
+                if (property.isMozelType()) {
+                    return this.setupSubComponent(property, MozelForm);
+                }
+                // Mozel Collection
+                if (property.isCollectionType(Mozel)) {
+                    return this.setupSubComponents(property, MozelForm);
+                }
+            });
+        }
+    }
+    render(props) {
+        return super.render({ ...this.static.definition, ...props });
     }
 }
 //# sourceMappingURL=MozelForm.js.map

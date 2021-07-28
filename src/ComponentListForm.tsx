@@ -1,5 +1,5 @@
 import React from "react";
-import {debounce, humanReadable} from "./utils";
+import {debounce, humanReadable, isPlainObject} from "./utils";
 import ComponentList from "mozel-component/dist/Component/ComponentList";
 
 import '@fortawesome/fontawesome-free/js/fontawesome'
@@ -10,9 +10,11 @@ import Button from "react-bootstrap/Button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Collapse from "react-bootstrap/Collapse";
 import ReactView from "mozel-component/dist/View/ReactView";
+import {FormDefinition} from "./MozelForm";
 
 type Props = {
-	list:ComponentList<ReactView>
+	list:ComponentList<ReactView>,
+	field?:FormDefinition
 };
 type State = {
 	expanded:boolean
@@ -61,9 +63,10 @@ export default class ComponentListForm extends React.Component<Props, State> {
 
 	render() {
 		const elements = this.props.list.map((view, index) => {
+			const field = isPlainObject(this.props.field) ? this.props.field : {};
 			const render = this.props.list.isReference
 				? <div className="fst-italic pt-2">{view.model.$name}</div>
-				: view.render();
+				: view.render(field);
 
 			return <ListGroupItem className="d-flex justify-content-between align-items-start" key={this.getKey(view, index)}>
 				<div className="flex-grow-1">{render}</div>

@@ -1,22 +1,21 @@
 import React from "react";
-import {debounce, humanReadable, isBoolean, isString} from "./utils";
+import {debounce, humanReadable, isBoolean} from "./utils";
 
 import '@fortawesome/fontawesome-free/js/fontawesome'
 import '@fortawesome/fontawesome-free/js/solid'
 import '@fortawesome/fontawesome-free/js/regular'
-
-import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
 import Mozel, {Collection} from "mozel";
 import {primitive} from "validation-kit";
-import {CollectionChangedEvent} from "mozel/dist/Collection";
 import Field from "./Field";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Collapse from "react-bootstrap/Collapse";
+import {FormDefinition} from "./MozelForm";
 
 type Props = {
-	collection:Collection<primitive>
+	collection:Collection<primitive>,
+	field?:FormDefinition
 };
 type State = {
 	expanded:boolean
